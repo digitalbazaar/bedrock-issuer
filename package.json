@@ -1,0 +1,37 @@
+{
+  "name": "bedrock-issuer",
+  "version": "0.0.0",
+  "description": "Bedrock credential issuer module",
+  "main": "./lib/issuer",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitalbazaar/bedrock-issuer"
+  },
+  "keywords": [
+    "bedrock",
+    "credentials"
+  ],
+  "author": {
+    "name": "Digital Bazaar, Inc.",
+    "email": "support@digitalbazaar.com",
+    "url": "http://digitalbazaar.com"
+  },
+  "bugs": {
+    "url": "https://github.com/digitalbazaar/bedrock-issuer/issues"
+  },
+  "homepage": "https://github.com/digitalbazaar/bedrock-issuer",
+  "dependencies": {
+    "async": "~0.9.0"
+  },
+  "peerDependencies": {
+    "bedrock": "^1.0.0",
+    "bedrock-permission": "^1.0.0",
+    "bedrock-credentials-mongodb": "^0.0.0"
+  },
+  "directories": {
+    "lib": "./lib"
+  }
+}
