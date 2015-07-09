@@ -4,7 +4,7 @@
   "description": "Bedrock credential issuer module",
   "main": "./lib/issuer",
   "scripts": {
-    "test": "node test.js"
+    "test": "node bedrock/test.js test"
   },
   "repository": {
     "type": "git",

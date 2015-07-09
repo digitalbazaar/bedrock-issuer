@@ -4,6 +4,6 @@
 var bedrock = require('bedrock');
 
 require('bedrock-express');
-require('bedrock-issuer');
+require('../lib/issuer');
 
 bedrock.start();
