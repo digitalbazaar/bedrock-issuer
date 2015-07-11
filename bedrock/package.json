@@ -5,6 +5,8 @@
   "description": "Bedrock credential issuer test module",
   "main": "./test",
   "scripts": {
+    "test": "node test.js test --framework mocha --mocha-test ../tests/test.js",
+    "postinstall": "bower install && node test.js compile-less"
   },
   "repository": {
     "type": "git",
@@ -29,8 +31,9 @@
     "bedrock-express": "^1.0.0",
     "bedrock-mongodb": "^1.0.0",
     "bedrock-permission": "^1.0.0",
-    "jsonld-signatures": "~0.2.4"
+    "bower": "^1.4.1",
+    "jsonld-signatures": "~0.2.4",
+    "request": "^2.58.0"
   },
-  "directories": {
-  }
+  "directories": {}
 }

@@ -4,7 +4,8 @@
   "description": "Bedrock credential issuer module",
   "main": "./lib/issuer",
   "scripts": {
-    "test": "node bedrock/test.js test"
+    "test": "node bedrock/test.js test",
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,11 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-issuer",
   "dependencies": {
-    "async": "~0.9.0",
+    "async": "^1.3.0",
+    "bower": "^1.4.1",
+    "http-signature": "^0.11.0",
     "jsonld-signatures": "~0.2.4",
-    "superagent": "~0.21.0"
+    "request": "^2.58.0"
   },
   "peerDependencies": {
     "bedrock": "^1.0.0",
