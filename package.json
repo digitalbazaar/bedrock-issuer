@@ -26,6 +26,7 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-issuer",
   "dependencies": {
     "async": "^1.3.0",
+    "body-parser": "^1.13.3",
     "bower": "^1.4.1",
     "http-signature": "^0.11.0",
     "jsonld-signatures": "~0.2.4",

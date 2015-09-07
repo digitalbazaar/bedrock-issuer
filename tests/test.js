@@ -8,135 +8,17 @@ var async = require('async');
 var bedrock = require('bedrock');
 var config = bedrock.config;
 var brIdentity = require('bedrock-identity');
-var database = require('bedrock-mongodb');
+// var database = require('bedrock-mongodb');
 var request = require('request');
 var https = require('https');
 var httpSignature = require('http-signature');
 var request = require('request');
 var store = require('bedrock-credentials-mongodb');
+var database = require('bedrock-credentials-mongodb').database;
 var validation = require('bedrock-validation');
 // node 10.x limits number of simultaneous connections to the same host to 5
 https.globalAgent.maxSockets = 50;
 var identities = config.issuer.identities;
-
-// Insert identities and public keys used for testing into database
-function insertTestData(done) {
-  async.forEachOf(identities, function(identity, key, callbackA) {
-    async.parallel([
-      function(callback) {
-        brIdentity.insert(null, identity.identity, callback);
-      },
-      function(callback) {
-        brIdentity.addPublicKey(null, identity.keys.publicKey, callback);
-      }
-    ], callbackA);
-  }, function(err) {
-    if(err) {
-      if(!database.isDuplicateError(err)) {
-        // duplicate error means test data is already loaded
-        return done(err);
-      }
-    }
-    // revoke one credential for test
-    brIdentity.revokePublicKey(null,
-      identities.rsa1024Revoked.keys.publicKey.id,
-        function(err, publicKey) {
-          if(err) {
-            if(err.name !== 'NotFound') {
-              // NotFound error occurs if key has already been revoked
-              return done(err);
-            }
-          }
-          done();
-        }
-    );
-  });
-};
-
-function removeCollections(callback) {
-  var collectionNames = ['credentialProvider', 'identity', 'publicKey'];
-  database.openCollections(collectionNames, function(err) {
-    async.each(collectionNames, function(collectionName, callback) {
-      database.collections[collectionName].remove({}, callback);
-    }, function(err) {
-      callback(err);
-    });
-  });
-};
-
-function prepareDatabase(callback) {
-  async.series([
-    function(callback) {
-      removeCollections(callback);
-    },
-    function(callback) {
-      insertTestData(callback);
-    }
-  ], function(err) {
-    callback(err);
-  });
-};
-
-function findCredential(credentialId, callback) {
-  var query = {'credential.id': credentialId};
-  store.provider.collection.count(query, {}, function(err, result) {
-    if(err) {
-      return callback(err);
-    }
-    callback(null, result);
-  });
-};
-
-//--- Internal Functions
-
-function _pad(val) {
-  if(parseInt(val, 10) < 10) {
-    val = '0' + val;
-  }
-  return val;
-}
-
-// allows to specify +/- offset in seconds
-function _rfc1123(offsetSeconds) {
-  offsetSeconds == offsetSeconds || 0;
-  var date = new Date(Date.now() + offsetSeconds * 1000);
-  var months = ['Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'];
-  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return days[date.getUTCDay()] + ', ' +
-    _pad(date.getUTCDate()) + ' ' +
-    months[date.getUTCMonth()] + ' ' +
-    date.getUTCFullYear() + ' ' +
-    _pad(date.getUTCHours()) + ':' +
-    _pad(date.getUTCMinutes()) + ':' +
-    _pad(date.getUTCSeconds()) +
-    ' GMT';
-}
-
-function postOptions(postData) {
-  var postData = postData || '';
-  var options = {
-    host: config.server.domain,
-    port: config.server.port,
-    path: config.issuer.endpoints.unsignedCredential,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': postData.length
-    }
-  };
-  return options;
-};
 
 describe('bedrock-issuer', function() {
   before('Prepare the database', function(done) {
@@ -467,7 +349,7 @@ describe('bedrock-issuer', function() {
     });
 
     // the key used to sign this request has been revoked
-    it('should return 400 on a revoked signing key' , function(done) {
+    it('should return 400 on a revoked signing key', function(done) {
       var uniqueCredential = createUniqueCredential();
       var postData = JSON.stringify(uniqueCredential);
       var options = postOptions(postData);
@@ -632,3 +514,122 @@ describe('bedrock-issuer', function() {
   }); // End REST API
 
 });
+
+// Insert identities and public keys used for testing into database
+function insertTestData(done) {
+  async.forEachOf(identities, function(identity, key, callbackA) {
+    async.parallel([
+      function(callback) {
+        brIdentity.insert(null, identity.identity, callback);
+      },
+      function(callback) {
+        brIdentity.addPublicKey(null, identity.keys.publicKey, callback);
+      }
+    ], callbackA);
+  }, function(err) {
+    if(err) {
+      if(!database.isDuplicateError(err)) {
+        // duplicate error means test data is already loaded
+        return done(err);
+      }
+    }
+    // revoke one credential for test
+    brIdentity.revokePublicKey(null,
+      identities.rsa1024Revoked.keys.publicKey.id,
+        function(err, publicKey) {
+          if(err) {
+            if(err.name !== 'NotFound') {
+              // NotFound error occurs if key has already been revoked
+              return done(err);
+            }
+          }
+          done();
+        }
+    );
+  });
+}
+
+function removeCollections(callback) {
+  var collectionNames = ['credentialProvider', 'identity', 'publicKey'];
+  database.openCollections(collectionNames, function(err) {
+    async.each(collectionNames, function(collectionName, callback) {
+      database.collections[collectionName].remove({}, callback);
+    }, function(err) {
+      callback(err);
+    });
+  });
+}
+
+function prepareDatabase(callback) {
+  async.series([
+    function(callback) {
+      removeCollections(callback);
+    },
+    function(callback) {
+      insertTestData(callback);
+    }
+  ], function(err) {
+    callback(err);
+  });
+}
+
+function findCredential(credentialId, callback) {
+  var query = {'credential.id': credentialId};
+  store.provider.collection.count(query, {}, function(err, result) {
+    if(err) {
+      return callback(err);
+    }
+    callback(null, result);
+  });
+}
+
+//--- Internal Functions
+
+function _pad(val) {
+  if(parseInt(val, 10) < 10) {
+    val = '0' + val;
+  }
+  return val;
+}
+
+// allows to specify +/- offset in seconds
+function _rfc1123(offsetSeconds) {
+  offsetSeconds == offsetSeconds || 0;
+  var date = new Date(Date.now() + offsetSeconds * 1000);
+  var months = ['Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'];
+  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return days[date.getUTCDay()] + ', ' +
+    _pad(date.getUTCDate()) + ' ' +
+    months[date.getUTCMonth()] + ' ' +
+    date.getUTCFullYear() + ' ' +
+    _pad(date.getUTCHours()) + ':' +
+    _pad(date.getUTCMinutes()) + ':' +
+    _pad(date.getUTCSeconds()) +
+    ' GMT';
+}
+
+function postOptions(postData) {
+  var postData = postData || '';
+  var options = {
+    host: config.server.domain,
+    port: config.server.port,
+    path: config.issuer.endpoints.unsignedCredential,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': postData.length
+    }
+  };
+  return options;
+}
