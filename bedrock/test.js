@@ -21,10 +21,6 @@ bedrock.events.on('bedrock.configure', function() {
   config.server.domain = 'bedrock-issuer.dev';
   config.server.host = 'bedrock-issuer.dev:35443';
   config.server.baseUri = 'https://' + config.server.host;
-  config.views.vars.baseUri = config.server.baseUri;
-  config.views.vars['authorization-io'] = {};
-  config.views.vars['authorization-io'].baseUri =
-    'https://authorization.dev:33443';
 });
 
 bedrock.start();

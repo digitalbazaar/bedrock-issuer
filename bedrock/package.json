@@ -5,8 +5,7 @@
   "description": "Bedrock credential issuer test module",
   "main": "./test",
   "scripts": {
-    "test": "node test.js test --framework mocha --mocha-test ../tests/test.js",
-    "postinstall": "bower install && node test.js compile-less"
+    "test": "node test.js test"
   },
   "repository": {
     "type": "git",
