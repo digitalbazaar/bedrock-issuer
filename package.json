@@ -36,6 +36,7 @@
     "bedrock": "^1.0.0",
     "bedrock-consumer": "digitalbazaar/bedrock-consumer#login",
     "bedrock-credentials-mongodb": "^0.0.1-dev",
+    "bedrock-credentials-rest": "digitalbazaar/bedrock-credentials-rest",
     "bedrock-express": "^1.0.0",
     "bedrock-mongodb": "^1.0.0",
     "bedrock-permission": "^1.0.0"
