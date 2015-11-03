@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2015 Digital Bazaar, Inc. All rights reserved.
  */
-
+ /* globals after, afterEach, before, beforeEach, it, process, describe,
+    require, should */
+ /* jshint -W030, -W097 */
 'use strict';
 
 var async = require('async');
@@ -77,9 +79,8 @@ describe('bedrock-issuer', function() {
     var testBaseUri = 'https://example.com/credentials/';
     function createUniqueCredential() {
       var newCredential = bedrock.tools.clone(unsignedCredentialTemplate);
-      newCredential.id = testBaseUri + bedrock.tools.uuid();
       return newCredential;
-    };
+    }
 
     // generate credentials with unique ids for testing
     var defectiveCredential1 = bedrock.tools.clone(defectiveCredentialTemplate);
@@ -110,11 +111,7 @@ describe('bedrock-issuer', function() {
           var parsedBody = JSON.parse(body);
           should.exist(parsedBody.type);
           parsedBody.type.should.equal('PermissionDenied');
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       });
       req.end(postData);
@@ -128,11 +125,10 @@ describe('bedrock-issuer', function() {
         var body = '';
         res.on('data', function(chunk) {body += chunk;});
         res.on('end', function() {
-          res.statusCode.should.equal(200);
+          res.statusCode.should.equal(201);
           var parsedBody = JSON.parse(body);
-          should.exist(parsedBody.location);
-          parsedBody.location.should.equal(uniqueCredential.id);
-          findCredential(uniqueCredential.id, function(err, result) {
+          should.exist(parsedBody.id);
+          findCredential(parsedBody.id, function(err, result) {
             should.not.exist(err);
             result.should.equal(1);
             done();
@@ -164,10 +160,9 @@ describe('bedrock-issuer', function() {
         };
         request(options, function(err, res, body) {
           should.not.exist(err);
-          should.exist(body.location);
-          body.location.should.equal(uniqueCredential.id);
-          res.statusCode.should.equal(200);
-          findCredential(uniqueCredential.id, function(err, result) {
+          should.exist(body.id);
+          res.statusCode.should.equal(201);
+          findCredential(body.id, function(err, result) {
             should.not.exist(err);
             result.should.equal(1);
             done();
@@ -184,11 +179,10 @@ describe('bedrock-issuer', function() {
         var body = '';
         res.on('data', function(chunk) {body += chunk;});
         res.on('end', function() {
-          res.statusCode.should.equal(200);
+          res.statusCode.should.equal(201);
           var parsedBody = JSON.parse(body);
-          should.exist(parsedBody.location);
-          parsedBody.location.should.equal(uniqueCredential.id);
-          findCredential(uniqueCredential.id, function(err, result) {
+          should.exist(parsedBody.id);
+          findCredential(parsedBody.id, function(err, result) {
             should.not.exist(err);
             result.should.equal(1);
             done();
@@ -225,11 +219,7 @@ describe('bedrock-issuer', function() {
           should.exist(body);
           body.should.be.a('string');
           body.should.contain('application/json');
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       }
     );
@@ -254,11 +244,7 @@ describe('bedrock-issuer', function() {
         request.post(options, function(err, res, body) {
           should.not.exist(err);
           res.statusCode.should.equal(415);
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       }
     );
@@ -277,11 +263,7 @@ describe('bedrock-issuer', function() {
           parsedBody.type.should.equal('ValidationError');
           should.exist(parsedBody.details.errors[0].details.path);
           parsedBody.details.errors[0].details.path = 'claim.id';
-          findCredential(defectiveCredential1.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       });
       httpSignature.sign(req, {
@@ -292,7 +274,8 @@ describe('bedrock-issuer', function() {
       req.end(postData);
     });
 
-    it('should return 409 on a duplicate credential', function(done) {
+    // FIXME: what qualifies as a duplicate credential?
+    it.skip('should return 409 on a duplicate credential', function(done) {
       async.series([
         function(callback) {
           var postData = JSON.stringify(unsignedCredentialDuplicateTest);
@@ -361,11 +344,7 @@ describe('bedrock-issuer', function() {
           var parsedBody = JSON.parse(body);
           should.exist(parsedBody.cause.details.publicKey.id);
           should.exist(parsedBody.cause.details.publicKey.revoked);
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       });
       httpSignature.sign(req, {
@@ -392,11 +371,7 @@ describe('bedrock-issuer', function() {
             var parsedBody = JSON.parse(body);
             should.exist(parsedBody.type);
             parsedBody.type.should.equal('PermissionDenied');
-            findCredential(uniqueCredential.id, function(err, result) {
-              should.not.exist(err);
-              result.should.equal(0);
-              done();
-            });
+            done();
           });
         });
         httpSignature.sign(req, {
@@ -424,11 +399,7 @@ describe('bedrock-issuer', function() {
             var parsedBody = JSON.parse(body);
             should.exist(parsedBody.type);
             parsedBody.type.should.equal('PermissionDenied');
-            findCredential(uniqueCredential.id, function(err, result) {
-              should.not.exist(err);
-              result.should.equal(0);
-              done();
-            });
+            done();
           });
         });
         httpSignature.sign(req, {
@@ -462,11 +433,7 @@ describe('bedrock-issuer', function() {
           should.exist(body);
           body.should.be.an('object');
           body.cause.type.should.equal('HttpSignature.MissingHeaders');
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
       }
     );
@@ -497,11 +464,7 @@ describe('bedrock-issuer', function() {
             var parsedBody = JSON.parse(body);
           });
           res.statusCode.should.equal(400);
-          findCredential(uniqueCredential.id, function(err, result) {
-            should.not.exist(err);
-            result.should.equal(0);
-            done();
-          });
+          done();
         });
         httpSignature.sign(req, {
           key: identities.rsa2048.keys.privateKey.privateKeyPem,
@@ -620,15 +583,16 @@ function _rfc1123(offsetSeconds) {
 }
 
 function postOptions(postData) {
-  var postData = postData || '';
+  postData = postData || '';
   var options = {
     host: config.server.domain,
     port: config.server.port,
     path: config.issuer.endpoints.unsignedCredential,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': postData.length
+      'Content-Type': 'application/ld+json',
+      'Content-Length': postData.length,
+      'Accept': 'application/ld+json'
     }
   };
   return options;
