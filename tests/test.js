@@ -160,16 +160,15 @@ describe('bedrock-issuer', function() {
         };
         request(options, function(err, res, body) {
           should.not.exist(err);
-          should.exist(body.id);
           res.statusCode.should.equal(201);
+          should.exist(body.id);
           findCredential(body.id, function(err, result) {
             should.not.exist(err);
             result.should.equal(1);
             done();
           });
         });
-      }
-    );
+      });
 
     it('should accept a single RSA 2048 signed request', function(done) {
       var uniqueCredential = createUniqueCredential();
@@ -221,8 +220,7 @@ describe('bedrock-issuer', function() {
           body.should.contain('application/json');
           done();
         });
-      }
-    );
+      });
 
     it('should return 415 if the Content-Type header is not set properly',
       function(done) {
@@ -246,8 +244,7 @@ describe('bedrock-issuer', function() {
           res.statusCode.should.equal(415);
           done();
         });
-      }
-    );
+      });
 
     // the malformed credential is missing the claim.id property
     it('should return 400 if credential is malformed', function(done) {
@@ -380,8 +377,7 @@ describe('bedrock-issuer', function() {
           headers: ['date', 'host', 'request-line']
         });
         req.end(postData);
-      }
-    );
+      });
 
     // this test sends a properly signed request, but the public key is not
     //  registered with the server
@@ -409,8 +405,7 @@ describe('bedrock-issuer', function() {
           headers: ['date', 'host', 'request-line']
         });
         req.end(postData);
-      }
-    );
+      });
 
     // only the date header will be signed with http-signature
     it('should return 400 if the proper headers are not signed',
@@ -435,8 +430,7 @@ describe('bedrock-issuer', function() {
           body.cause.type.should.equal('HttpSignature.MissingHeaders');
           done();
         });
-      }
-    );
+      });
 
     // this test specified a date header outside the clock skew window
     // the datetime in the header is advanced by 302 seconds
@@ -451,20 +445,22 @@ describe('bedrock-issuer', function() {
           path: config.issuer.endpoints.unsignedCredential,
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/ld+json',
             'Content-Length': postData.length,
-            'date': _rfc1123(302)
+            'date': _rfc1123(302),
+            'Accept': 'application/ld+json'
           }
         };
         var req = https.request(options, function(res) {
           var body = '';
           res.on('data', function(chunk) {body += chunk;});
           res.on('end', function() {
-            // this event is not triggered
+            res.statusCode.should.equal(400);
             var parsedBody = JSON.parse(body);
+            should.exist(parsedBody.type);
+            parsedBody.type.should.equal('PermissionDenied');
+            done();
           });
-          res.statusCode.should.equal(400);
-          done();
         });
         httpSignature.sign(req, {
           key: identities.rsa2048.keys.privateKey.privateKeyPem,
@@ -472,8 +468,62 @@ describe('bedrock-issuer', function() {
           headers: ['date', 'host', 'request-line']
         });
         req.end(postData);
-      }
-    );
+      });
+
+    describe('Organization Operations', function() {
+      it('should accept a credential from a member', function(done) {
+        var uniqueCredential = createUniqueCredential();
+        uniqueCredential.issuer = identities.organizationAlpha.identity.id;
+        var options = {
+          url: config.server.baseUri +
+            config.issuer.endpoints.unsignedCredential,
+          method: 'POST',
+          body: uniqueCredential,
+          json: true,
+          httpSignature: {
+            key: identities.organizationAlphaMember
+              .keys.privateKey.privateKeyPem,
+            keyId: identities.organizationAlphaMember.keys.publicKey.id,
+            headers: ['date', 'host', 'request-line']
+          }
+        };
+        request(options, function(err, res, body) {
+          should.not.exist(err);
+          res.statusCode.should.equal(201);
+          should.exist(body.id);
+          findCredential(body.id, function(err, result) {
+            should.not.exist(err);
+            result.should.equal(1);
+            done();
+          });
+        });
+      });
+
+      it('should not accept a credential from a non-member', function(done) {
+        var uniqueCredential = createUniqueCredential();
+        uniqueCredential.issuer = identities.organizationAlpha.identity.id;
+        var options = {
+          url: config.server.baseUri +
+            config.issuer.endpoints.unsignedCredential,
+          method: 'POST',
+          body: uniqueCredential,
+          json: true,
+          httpSignature: {
+            key: identities.organizationAlphaNonMember
+              .keys.privateKey.privateKeyPem,
+            keyId: identities.organizationAlphaNonMember.keys.publicKey.id,
+            headers: ['date', 'host', 'request-line']
+          }
+        };
+        request(options, function(err, res, body) {
+          should.not.exist(err);
+          res.statusCode.should.equal(400);
+          should.exist(body.type);
+          body.type.should.equal('AddCredentialFailed');
+          done();
+        });
+      });
+    });
   }); // End REST API
 
 });
