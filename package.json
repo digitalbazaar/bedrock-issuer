@@ -35,12 +35,12 @@
     "bedrock-consumer": "digitalbazaar/bedrock-consumer#master",
     "bedrock-credentials-mongodb": "digitalbazaar/bedrock-credentials-mongodb#master",
     "bedrock-credentials-rest": "digitalbazaar/bedrock-credentials-rest#master",
-    "bedrock-express": "^1.0.0",
-    "bedrock-identity": "^1.0.0",
+    "bedrock-express": "^1.4.1",
+    "bedrock-identity": "digitalbazaar/bedrock-identity#2.x",
     "bedrock-jobs": "^1.0.0",
     "bedrock-mongodb": "^1.0.0",
-    "bedrock-passport": "^1.0.0",
-    "bedrock-permission": "^1.0.0",
+    "bedrock-passport": "digitalbazaar/bedrock-passport#2.x",
+    "bedrock-permission": "^1.1.0",
     "bedrock-validation": "^1.0.0"
   },
   "directories": {
