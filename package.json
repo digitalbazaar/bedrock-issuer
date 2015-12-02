@@ -41,6 +41,7 @@
     "bedrock-mongodb": "^1.0.0",
     "bedrock-passport": "digitalbazaar/bedrock-passport#2.x",
     "bedrock-permission": "^1.1.0",
+    "bedrock-rest": "^1.1.0",
     "bedrock-validation": "^1.0.0"
   },
   "directories": {
