@@ -86,16 +86,16 @@ describe('Unauthenticated signing requests', function() {
       body.id.should.equal(config.issuer.credentialSigningKeys.publicKeyId);
       should.exist(body.owner);
       body.owner.should.be.a('string');
-      body.owner.should.equal(config.server.baseUri);
+      body.owner.should.equal(config.server.baseUri + '/issuer');
       done();
     });
   });
 
   // FIXME: this endpoint has been disabled
-  describe.skip('public key owner document', function() {
+  describe('public key owner document', function() {
     it('should serve if accept header is application/ld+json', function(done) {
       request({
-        url: config.server.baseUri,
+        url: config.server.baseUri + '/issuer',
         method: 'GET',
         json: true,
         headers: {
@@ -111,16 +111,16 @@ describe('Unauthenticated signing requests', function() {
         body['@context'].should.be.a('string');
         body['@context'].should.equal('https://w3id.org/identity/v1');
         should.exist(body.publicKey);
-        body.publicKey.should.be.a('string');
-        body.publicKey.should.equal(
+        body.publicKey.should.be.an('array');
+        body.publicKey[0].should.equal(
           config.issuer.credentialSigningKeys.publicKeyId);
         done();
       });
     });
 
-    it('should return 404 if accept header is text/html', function(done) {
+    it('should return html if accept header is text/html', function(done) {
       request({
-        url: config.server.baseUri,
+        url: config.server.baseUri + '/issuer',
         method: 'GET',
         json: true,
         headers: {
@@ -129,33 +129,7 @@ describe('Unauthenticated signing requests', function() {
       }, function(err, res, body) {
         should.not.exist(err);
         should.exist(res.statusCode);
-        res.statusCode.should.equal(404);
-        done();
-      });
-    });
-
-    it('should return 406 if header is not properly set', function(done) {
-      request({
-        url: config.server.baseUri,
-        method: 'GET',
-        json: true,
-        headers: {
-          'Accept': 'text/csv'
-        }
-      }, function(err, res, body) {
-        should.not.exist(err);
-        should.exist(res.statusCode);
-        res.statusCode.should.equal(406);
-        should.exist(body);
-        body.should.be.an('object');
-        should.exist(body.message);
-        body.message.should.be.a('string');
-        should.exist(body.details);
-        body.details.should.be.an('object');
-        should.exist(body.details.accepted);
-        body.details.accepted.should.be.a('string');
-        should.exist(body.details.acceptable);
-        body.details.acceptable.should.be.an('array');
+        res.statusCode.should.equal(200);
         done();
       });
     });
