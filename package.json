@@ -38,7 +38,6 @@
     "bedrock-express": "^1.4.1",
     "bedrock-identity": "digitalbazaar/bedrock-identity#2.x",
     "bedrock-jobs": "^1.0.0",
-    "bedrock-key": "digitalbazaar/bedrock-key#master",
     "bedrock-mongodb": "^1.0.0",
     "bedrock-passport": "digitalbazaar/bedrock-passport#2.x",
     "bedrock-permission": "^1.1.0",
