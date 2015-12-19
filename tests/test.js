@@ -10,6 +10,7 @@ var async = require('async');
 var bedrock = require('bedrock');
 var config = bedrock.config;
 var brIdentity = require('bedrock-identity');
+var brKey = require('bedrock-key');
 // var database = require('bedrock-mongodb');
 var request = require('request');
 var https = require('https');
@@ -536,7 +537,7 @@ function insertTestData(done) {
         brIdentity.insert(null, identity.identity, callback);
       },
       function(callback) {
-        brIdentity.addPublicKey(null, identity.keys.publicKey, callback);
+        brKey.addPublicKey(null, identity.keys.publicKey, callback);
       }
     ], callbackA);
   }, function(err) {
@@ -547,7 +548,7 @@ function insertTestData(done) {
       }
     }
     // revoke one credential for test
-    brIdentity.revokePublicKey(null,
+    brKey.revokePublicKey(null,
       identities.rsa1024Revoked.keys.publicKey.id,
         function(err, publicKey) {
           if(err) {
