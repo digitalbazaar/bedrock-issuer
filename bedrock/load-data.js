@@ -45,7 +45,7 @@ function createUniqueCredential() {
   var newCredential = bedrock.tools.clone(credentialTemplate);
   newCredential.id = testBaseUri + bedrock.tools.uuid();
   return newCredential;
-};
+}
 
 function insertTestData(numberOfRecords, callback) {
   async.times(numberOfRecords, function(n, next) {
@@ -55,7 +55,7 @@ function insertTestData(numberOfRecords, callback) {
       }
     );
   }, callback);
-};
+}
 
 bedrock.events.on('bedrock-mongodb.ready', function(callback) {
   insertTestData(1, callback);
