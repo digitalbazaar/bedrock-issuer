@@ -24,22 +24,22 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-issuer",
   "dependencies": {
-    "async": "^1.4.2",
+    "async": "^1.5.2",
     "http-signature": "^1.0.2",
     "jsonld-signatures": "^1.1.2",
     "request": "^2.58.0"
   },
   "peerDependencies": {
     "bedrock": "^1.0.0",
-    "bedrock-consumer": "digitalbazaar/bedrock-consumer#master",
-    "bedrock-credentials-mongodb": "digitalbazaar/bedrock-credentials-mongodb#master",
-    "bedrock-credentials-rest": "digitalbazaar/bedrock-credentials-rest#master",
+    "bedrock-consumer": "^1.0.0",
+    "bedrock-credentials-mongodb": "^1.0.0",
+    "bedrock-credentials-rest": "^0.1.0",
     "bedrock-express": "^1.0.0",
-    "bedrock-identity": "^1.0.0",
+    "bedrock-identity": "^2.0.0",
     "bedrock-jobs": "^1.0.0",
     "bedrock-mongodb": "^1.0.0",
-    "bedrock-passport": "^1.0.0",
-    "bedrock-permission": "^1.0.0",
+    "bedrock-passport": "^2.0.0",
+    "bedrock-permission": "^1.1.0",
     "bedrock-validation": "^1.0.0"
   },
   "directories": {
