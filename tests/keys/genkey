@@ -1,0 +1,15 @@
+#!/bin/sh
+# simple test script to generate a test keypair
+if [ $# -lt 1 ]; then
+   echo "Usage: $0 KEYNAME"
+   exit 1
+fi
+name=$1
+if [ -f ${name}.pem ]; then
+   echo "Error: ${name}.pem exists."
+   exit 1
+fi
+echo "Creating ${name}.pem and ${name}.pub..."
+openssl genrsa -out ${name}.pem 2048
+openssl rsa -in ${name}.pem -pubout -out ${name}.pub
+echo "Done."
