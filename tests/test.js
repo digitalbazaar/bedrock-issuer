@@ -12,7 +12,6 @@ var config = bedrock.config;
 var brIdentity = require('bedrock-identity');
 var brKey = require('bedrock-key');
 // var database = require('bedrock-mongodb');
-var request = require('request');
 var https = require('https');
 var httpSignature = require('http-signature');
 var request = require('request');
