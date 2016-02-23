@@ -23,7 +23,7 @@ var unsignedCredential = {
   type: ['Credential', 'br:test:BirthDateCredential'],
   // extended with name option
   name: 'Birth Date Credential',
-  image: 'https://example.com/credential',
+  image: 'https://cdn.rawgit.com/google/material-design-icons/182053460b9e96cab11924c0b50dcb50dc8d5366/action/2x_web/ic_face_black_48dp.png',
   // now or set with date option
   issued: null,
   claim: {
