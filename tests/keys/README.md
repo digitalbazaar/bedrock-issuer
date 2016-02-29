@@ -20,7 +20,7 @@ Setup
 - Login to the issuer.
 - Use [genkey](./genkey) or a similar tool to create a test keypair.
   - `./genkey test`
-- On the issuer, user the dashboard "Add Key" menu option:
+- On the issuer, use the dashboard "Add Key" menu option:
   - Add the public key contents from `test.pub`.
   - Note the generated key ID.
 
