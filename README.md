@@ -3,6 +3,10 @@
 A [bedrock][] module that provides basic credential issuance and claiming
 capability.
 
+## Requirements
+
+- npm v3+
+
 ## Quick Examples
 
 ```

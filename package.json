@@ -1,6 +1,6 @@
 {
   "name": "bedrock-issuer",
-  "version": "0.2.2-dev",
+  "version": "0.3.0-dev",
   "description": "Bedrock credential issuer module",
   "main": "./lib/issuer",
   "scripts": {
@@ -31,16 +31,16 @@
   },
   "peerDependencies": {
     "bedrock": "^1.0.0",
-    "bedrock-consumer": "^1.0.0",
-    "bedrock-credentials-mongodb": "^1.0.0",
-    "bedrock-credentials-rest": "^0.1.0",
-    "bedrock-express": "^1.0.0",
-    "bedrock-identity": "^2.0.0",
-    "bedrock-jobs": "^1.0.0",
-    "bedrock-mongodb": "^1.0.0",
-    "bedrock-passport": "^2.0.0",
-    "bedrock-permission": "^1.1.0",
-    "bedrock-validation": "^1.0.0"
+    "bedrock-consumer": "^2.0.0",
+    "bedrock-credentials-mongodb": "^2.0.0",
+    "bedrock-credentials-rest": "^0.2.0",
+    "bedrock-express": "^2.0.0",
+    "bedrock-identity": "^3.0.0",
+    "bedrock-jobs": "^2.0.0",
+    "bedrock-mongodb": "^2.0.0",
+    "bedrock-passport": "^3.0.0",
+    "bedrock-permission": "^2.0.0",
+    "bedrock-validation": "^2.0.0"
   },
   "directories": {
     "lib": "./lib"
