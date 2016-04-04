@@ -25,3 +25,6 @@ issuer.issue(actor, credential, {
 
 // mark a credential as claimed
 issuer.claim(actor, credentialId, callback);
+```
+
+[bedrock]: https://github.com/digitalbazaar/bedrock
