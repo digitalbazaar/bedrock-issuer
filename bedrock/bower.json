@@ -1,8 +1,8 @@
 {
-  "name": "authorization.io",
+  "name": "bedrock-issuer-dev",
   "version": "0.3.0",
   "private": true,
-  "description": "authorization.io website bower dependencies.",
+  "description": "bedrock-issuer-dev bower dependencies.",
   "dependencies": {
     "angular": "~1.3.15",
     "angular-bootstrap": "~0.12.0",
