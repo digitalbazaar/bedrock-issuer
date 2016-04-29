@@ -29,9 +29,9 @@
     "bedrock": "^1.0.0",
     "bedrock-credentials-mongodb": "^2.0.0",
     "bedrock-express": "^2.0.0",
-    "bedrock-key": "^2.0.0",
+    "bedrock-key": "^3.0.0",
     "bedrock-mongodb": "^2.0.0",
-    "bedrock-permission": "^2.0.0",
+    "bedrock-permission": "^2.3.0",
     "bower": "^1.4.2",
     "jsonld-signatures": "^1.1.2",
     "request": "^2.58.0"
