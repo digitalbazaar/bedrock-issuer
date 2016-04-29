@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.4] - 2016-04-29
+
 ## [0.3.3] - 2016-04-26
 
 ## [0.3.2] - 2016-04-15
@@ -36,7 +38,8 @@
 
 - See git history for changes.
 
-[Unreleased]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.3...HEAD
+[Unreleased]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.4...HEAD
+[0.3.4]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.3...0.3.4
 [0.3.3]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/digitalbazaar/bedrock-issuer/compare/0.3.0...0.3.1
