@@ -34,7 +34,7 @@ describe('bedrock-issuer', function() {
     // NOTE: the claim.id used here currently exists at authorization.io
     var unsignedCredentialTemplate = {
       '@context': 'https://w3id.org/identity/v1',
-      issuer: 'did:someIssuer12345',
+      issuer: identities.organizationAlpha.identity.id,
       type: ['Credential', 'BirthDateCredential'],
       name: 'Birth Date Credential',
       image: 'https://images.com/verified-email-badge',
@@ -56,7 +56,7 @@ describe('bedrock-issuer', function() {
     // this credential is missing id property in claim
     var defectiveCredentialTemplate = {
       '@context': 'https://w3id.org/identity/v1',
-      issuer: 'did:someIssuer12345',
+      issuer: identities.organizationAlpha.identity.id,
       recipient: 'did:someRecipient12345',
       type: ['Credential', 'BirthDateCredential'],
       name: 'Birth Date Credential',
@@ -77,8 +77,11 @@ describe('bedrock-issuer', function() {
     };
 
     var testBaseUri = 'https://example.com/credentials/';
-    function createUniqueCredential() {
+    function createUniqueCredential(issuerId) {
       var newCredential = bedrock.tools.clone(unsignedCredentialTemplate);
+      if(issuerId) {
+        newCredential.issuer = issuerId;
+      }
       return newCredential;
     }
 
@@ -170,6 +173,33 @@ describe('bedrock-issuer', function() {
         });
       });
 
+    it('should accept a request using preferred key', function(done) {
+      var issuerId = identities.rsa4096preferred.identity.id;
+      var uniqueCredential = createUniqueCredential(issuerId);
+      var postData = JSON.stringify(uniqueCredential);
+      var options = postOptions(postData);
+      var req = https.request(options, function(res) {
+        var body = '';
+        res.on('data', function(chunk) {body += chunk;});
+        res.on('end', function() {
+          res.statusCode.should.equal(201);
+          var parsedBody = JSON.parse(body);
+          should.exist(parsedBody.id);
+          findCredential(parsedBody.id, function(err, result) {
+            should.not.exist(err);
+            result.should.equal(1);
+            done();
+          });
+        });
+      });
+      httpSignature.sign(req, {
+        key: identities.rsa4096preferred.keys.privateKey.privateKeyPem,
+        keyId: identities.rsa4096preferred.keys.publicKey.id,
+        headers: ['date', 'host', 'request-line']
+      });
+      req.end(postData);
+    });
+
     it('should accept a single RSA 2048 signed request', function(done) {
       var uniqueCredential = createUniqueCredential();
       var postData = JSON.stringify(uniqueCredential);
@@ -191,6 +221,27 @@ describe('bedrock-issuer', function() {
       httpSignature.sign(req, {
         key: identities.rsa2048.keys.privateKey.privateKeyPem,
         keyId: identities.rsa2048.keys.publicKey.id,
+        headers: ['date', 'host', 'request-line']
+      });
+      req.end(postData);
+    });
+
+    it('should return 400 if issuer has no keys', function(done) {
+      var issuerId = identities.rsa4096nokey.identity.id;
+      var uniqueCredential = createUniqueCredential(issuerId);
+      var postData = JSON.stringify(uniqueCredential);
+      var options = postOptions(postData);
+      var req = https.request(options, function(res) {
+        var body = '';
+        res.on('data', function(chunk) {body += chunk;});
+        res.on('end', function() {
+          res.statusCode.should.equal(400);
+          done();
+        });
+      });
+      httpSignature.sign(req, {
+        key: identities.rsa4096.keys.privateKey.privateKeyPem,
+        keyId: identities.rsa4096.keys.publicKey.id,
         headers: ['date', 'host', 'request-line']
       });
       req.end(postData);
@@ -536,7 +587,10 @@ function insertTestData(done) {
         brIdentity.insert(null, identity.identity, callback);
       },
       function(callback) {
-        brKey.addPublicKey(null, identity.keys.publicKey, callback);
+        if(identity.keys) {
+          return brKey.addPublicKey(null, identity.keys.publicKey, callback);
+        }
+        callback();
       }
     ], callbackA);
   }, function(err) {
