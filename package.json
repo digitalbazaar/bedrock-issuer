@@ -1,6 +1,6 @@
 {
   "name": "bedrock-issuer",
-  "version": "0.3.5-dev",
+  "version": "1.0.0",
   "description": "Bedrock credential issuer module",
   "main": "./lib/issuer",
   "scripts": {
