@@ -1,6 +1,9 @@
 # bedrock-issuer ChangeLog
 
-## [Unreleased]
+## 1.0.1 - 2016-05-30
+
+### Changed
+- Update dependencies.
 
 ## 1.0.0 - 2106-05-25
 
