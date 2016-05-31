@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.2 - 2016-05-30
+
+### Fixed
+- Fix typos.
+
 ## 1.0.1 - 2016-05-30
 
 ### Changed
