@@ -1,5 +1,7 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.3 - 2016-06-07
+
 ### Changed
 - Update dependencies.
 
