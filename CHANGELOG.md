@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.4 - 2016-07-12
+
+### Changed
+- Remove bedrock.credential.issuer role from config.
+
 ## 1.0.3 - 2016-06-07
 
 ### Changed
