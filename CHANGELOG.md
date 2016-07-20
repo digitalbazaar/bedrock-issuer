@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.5 - 2016-07-20
+
+### Changed
+- Check signing key status before signing.
+
 ## 1.0.4 - 2016-07-12
 
 ### Changed
