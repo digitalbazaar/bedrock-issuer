@@ -1,14 +1,12 @@
 /*
- * Copyright (c) 2015 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
  */
 var bedrock = require('bedrock');
 var config = bedrock.config;
 
 require('bedrock-express');
+require('bedrock-identity-http');
 require('../lib/issuer');
-
-// Loads a fake credential into the database
-require('./load-data');
 
 // FIXME: this event is used to make sure that server.host is set properly
 // during tests.  If these values are set outside this function, server.host

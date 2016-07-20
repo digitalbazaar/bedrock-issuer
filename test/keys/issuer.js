@@ -1,4 +1,4 @@
-#!/usr/bin/node 
+#!/usr/bin/node
 /*
  * Copyright (c) 2016 Digital Bazaar, Inc. All rights reserved.
  */
@@ -77,9 +77,9 @@ bedrock.events.on('bedrock.started', function() {
       fs.readFile(bedrock.program.keyPem, 'utf8', callback);
     },
     unsigned: function(callback) {
-      var unsigned = bedrock.tools.clone(unsignedCredential);
+      var unsigned = bedrock.util.clone(unsignedCredential);
       unsigned.issuer = bedrock.program.issuer;
-      unsigned.issued = bedrock.tools.w3cDate(bedrock.program.date);
+      unsigned.issued = bedrock.util.w3cDate(bedrock.program.date);
       unsigned.claim.id = bedrock.program.recipient || bedrock.program.issuer;
       if(bedrock.program.credName) {
         unsigned.name = unsigned.name + ': ' + bedrock.program.credName;
