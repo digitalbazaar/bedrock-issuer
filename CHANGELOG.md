@@ -1,5 +1,7 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.6 - 2016-07-22
+
 ### Changed
 - Frame and compact incoming credentials to issuer service.
 - Add helper code to remove unneeded blank nodes.
