@@ -1,5 +1,7 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.7 - 2016-07-26
+
 ### Fixed
 - Handle framing error.
 
