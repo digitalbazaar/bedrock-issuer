@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.0.8 - 2016-08-03
+
+### Fixed
+- Create error if the private key is not returned.
+
 ## 1.0.7 - 2016-07-26
 
 ### Fixed
