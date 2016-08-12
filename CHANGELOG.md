@@ -1,5 +1,9 @@
 # bedrock-issuer ChangeLog
 
+### Added
+- Add ability to include custom meta data via `issue` API. Not
+  yet available via HTTP API.
+
 ## 1.0.8 - 2016-08-03
 
 ### Fixed
