@@ -3,7 +3,7 @@
 This is a [bedrock][]-based library that provides a simple JavaScript and HTTP
 API for issuing and claiming JSON-LD credentials and storing them in a
 database. It is not a comprehensive credential issuer application, rather it
-could be integrated into such an application to provide some portion of its
+can be integrated into such an application to provide some portion of its
 required features.
 
 ## Requirements
@@ -33,7 +33,7 @@ The call takes the following arguments:
   [credentials-context][] and must include an `issuer` identifier, an
   `issued` date, and a `claim` section with at least one claim.
 * **options** (*object*)
- * **meta** (*string*) - Custom meta data to store in the database along with
+ * **meta** (*object*) - Custom meta data to store in the database along with
    the credential in the database. This data will not be signed.
 * **callback** (**required** *function*) - The node-continuation-style
   callback function to call once the operation completes. On success, the
