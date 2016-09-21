@@ -1,5 +1,7 @@
 # bedrock-issuer
 
+[![Build Status](http://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-issuer)](http://ci.digitalbazaar.com/job/bedrock-issuer)
+
 This is a [bedrock][]-based library that provides a simple JavaScript and HTTP
 API for issuing and claiming JSON-LD credentials and storing them in a
 database. It is not a comprehensive credential issuer application, rather it

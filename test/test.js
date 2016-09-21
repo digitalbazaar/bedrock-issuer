@@ -4,9 +4,8 @@
 var bedrock = require('bedrock');
 var config = bedrock.config;
 
-require('bedrock-express');
 require('bedrock-identity-http');
-require('../lib/issuer');
+require('bedrock-issuer');
 
 // FIXME: this event is used to make sure that server.host is set properly
 // during tests.  If these values are set outside this function, server.host
@@ -25,4 +24,5 @@ bedrock.events.on('bedrock.configure', function() {
     'https://authorization.dev:33443';
 });
 
+require('bedrock-test');
 bedrock.start();

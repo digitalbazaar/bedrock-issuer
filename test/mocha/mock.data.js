@@ -1,84 +1,28 @@
 /*
- * Bedrock issuer test configuration.
- *
- * Copyright (c) 2015 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2015-2016 Digital Bazaar, Inc. All rights reserved.
  */
-var config = require('bedrock').config;
-var path = require('path');
-var uuid = require('uuid').v4;
 
-config.mocha.tests.push(path.join(__dirname, '..', 'test', 'mocha'));
+'use strict';
 
-// mongodb config
-config.mongodb.name = 'bedrock_issuer_test';
-config.mongodb.host = 'localhost';
-config.mongodb.port = 27017;
-config.mongodb.local.collection = 'bedrock_issuer_test';
-// drop all collections on initialization
-config.mongodb.dropCollections = {};
-config.mongodb.dropCollections.onInit = true;
-config.mongodb.dropCollections.collections = [];
+var helpers = require('./helpers');
 
-// credential roles
-var permissions = config.permission.permissions;
-var roles = config.permission.roles;
-roles['bedrock.credential.issuer'] = {
-  id: 'bedrock.credential.issuer',
-  label: 'Credential Issuer',
-  comment: 'Role for credential issuers.',
-  sysPermission: [
-    permissions.CREDENTIAL_INSERT.id,
-    permissions.CREDENTIAL_ISSUE.id,
-    permissions.PUBLIC_KEY_ACCESS.id
-  ]
-};
-
-// FIXME: this key needs to be stored in a safe place
-config.issuer.credentialSigningPrivateKey =
-  '-----BEGIN RSA PRIVATE KEY-----\n' +
-  'MIIEpQIBAAKCAQEAtTNN2uGiHW1EopfHvxWdIBUcZ5i881ybivtRLENL9cWOTy4Y\n' +
-  '8jy7TZJi/jIzykrk0jPZfnf7OR68Y5sJyCojG7eXF3THZAS/j1RNdjmenZF3ROiQ\n' +
-  'xYoLJvRhNCBUwz2czalrB9DPtfZjIbkSygoeGR7tZsH7RGSN9l+gNWGGu3nqHePi\n' +
-  '5ABUzkczMPwQ8Ht6uTe5HIvcuDaXlMCKpgugyY71gn8PD+gdD09ZA55p3fxvBJGq\n' +
-  'Q5K3p/w/Ui2vA8b+1N+iZ6xWAv7bH8SI7qwQCo5/yVGsR+ieEFvZzoiOIgNxEaQD\n' +
-  'LeGXcy3KRVMX3Z1CARXZhnaD/SsCZqHAynuiQQIDAQABAoIBAQCM7LvOUdGdhU/u\n' +
-  'DJGjQZIUU5bl01qRAyNNsivteuFm4iDN4BIyw50Atasb+7tfx2OzP/QVcgcG46qs\n' +
-  '5PV0oaDwe5ac/Yvdc/vv4ybjneiIr4vNIfsGR1hpEYNP4R1LQ23iXbMKPxJseJWc\n' +
-  'sq20SK4j53PHiXJ8PKBUTwbwvUrmHpmnC3KetLOGnwZMTN2IwQ8PN7nybknpnaMh\n' +
-  'eeUdmaSTt8Odv2P7j3B5m5ZxNryWiJI4u5b1qmiRepnlhbFERuEWGlBPDgaU+6Nl\n' +
-  'Ce540JaBjczgx96JM33Gd6UjZpBCvDtU07YAoTAkchpqn1d9YKquiRjY940OJ/P8\n' +
-  'U8ztv9NpAoGBAOR55sD8VEOlLlhXR/e/pv9FtRskWC5KB5w5pPbGpuombCH6wZgI\n' +
-  'ey/DXW8zXETBRv1kpt65AypreeEFSUpK+SbNB+4FXyXYNmPU+WYrjPs8oXwnhaSa\n' +
-  'jRlCeD2LyADaXtu6b7BPcxHj75V0XnFEJJmHIKJwOeuEJ5HUGMvCQMgvAoGBAMsH\n' +
-  'cKcu0z3qO2AXosqeo+zPHijz/eXmancgVq4fgfQybZNN3XXEwke6R8I7UDquxOOz\n' +
-  'Wv2Zj7Dv8xFYEw8jOK1NxQx7n6PunyiV0FoG1x8UcOof4TA+erGlWZKAbkOP7NZt\n' +
-  'f9QocC9xzKwHM1eCt+RRt9zXVQZ1T8/mM7AVrTCPAoGBAL5Z1WeJkoa9MuyE4z/E\n' +
-  '29Qn9mhDkngWU1rUJ901ylCgbEyvBuWsgz1a7hg8WS4rPQLV/bTnvXx1CJjx94q/\n' +
-  'Be9OuMGUlh4IkeAAyzxVImMas4ulvdFStiWKXHUiZSJYzNkR7gWdW8hW9/+zcQ+6\n' +
-  '7yc+DnFnQMo4U2NKqtHv6FsfAoGBAJQzryDqhlp4w7TGLBfZq3EuUyazzE9oXajt\n' +
-  'mzhpWXRG50OSoCjaYrL3IHCA2XSspJ5OCwp5cLFIxlaPwwHWxQWEcmVFTGfexKFc\n' +
-  'koVU3u0Z/753XOrZgLhyKatOQq7gvZJcxeW5SwLm/+9HJkwn6FIq8JqtOKyJL6Rj\n' +
-  'trE/cXezAoGAQXZ3NnDMy/Q5bPorf0ioG1OBjLhCiwUC6V1UJIMerg9oXRm6Nq9k\n' +
-  '4XLNFc2PBiUUws0ULbEB3cuQjnNpLt70vMHG3U78zKsd2KJWuG/O4O2HKN6NJbKV\n' +
-  '9GQiaGHziE3Ud0lALA3NQVT4wtWi1rLRY3nhnytg4cVZeWexo5oRUe4=\n' +
-  '-----END RSA PRIVATE KEY-----\n';
-config.issuer.credentialSigningPublicKeyId = 'https://example.com/keys/1';
+var mock = {};
+module.exports = mock;
 
 // TODO: Correct these paths to be more accurate
-var baseIdPath = config.server.baseUri;
 var userName = '';
 var keyId = '';
-config.issuer.identities = {};
+mock.identities = {};
 
 // user with a valid 2048 bit RSA keypair
 userName = 'issuerAlpha';
 keyId = 'b68afe7f-4058-4b07-927d-a7f474d778ef';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity = createIdentity({
+mock.identities[userName] = {};
+mock.identities[userName].identity = helpers.createIdentity({
   userName: userName,
   credentialSigningKey: keyId
 });
-config.issuer.identities[userName].keys = createKeyPair({
+mock.identities[userName].keys = helpers.createKeyPair({
   userName: userName,
   keyId: keyId,
   isSigningKey: true,
@@ -122,10 +66,10 @@ config.issuer.identities[userName].keys = createKeyPair({
 
 // issuerBeta has not set a credential signing key
 userName = 'issuerBeta';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity =
-  createIdentity({userName: userName});
-config.issuer.identities[userName].keys = createKeyPair({
+mock.identities[userName] = {};
+mock.identities[userName].identity =
+  helpers.createIdentity({userName: userName});
+mock.identities[userName].keys = helpers.createKeyPair({
   userName: userName,
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxBTbcgMr6WY74XoUkXBg\n' +
@@ -197,13 +141,13 @@ config.issuer.identities[userName].keys = createKeyPair({
 // user with a valid 2048 bit RSA keypair
 userName = 'issuerGamma';
 keyId = '96bb310b-1ea2-4154-9ab9-cd30e64ecf2d';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity = createIdentity({
+mock.identities[userName] = {};
+mock.identities[userName].identity = helpers.createIdentity({
   userName: userName,
   credentialSigningKey: keyId
 });
 // creating two keypairs for this user
-config.issuer.identities[userName].keys = [createKeyPair({
+mock.identities[userName].keys = [helpers.createKeyPair({
   keyId: keyId,
   userName: userName,
   isSigningKey: true,
@@ -243,7 +187,7 @@ config.issuer.identities[userName].keys = [createKeyPair({
     'M1mckfd+e9mtN349obLW+GXuTmIv+eVVxB4yMUA7XSSnE8JdecBCL7J2Uen+5Ufg\n' +
     'YFG4JWw245y+hCxsK6B+6P3yvotl85MbB8QT30MRFcxZnjttTmk=\n' +
     '-----END RSA PRIVATE KEY-----\n'
-}), createKeyPair({
+}), helpers.createKeyPair({
   userName: userName,
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3gxZF06Sz9EDEA8cEDBk\n' +
@@ -286,12 +230,12 @@ config.issuer.identities[userName].keys = [createKeyPair({
 // organization
 userName = 'organizationAlpha';
 keyId = '09bbb501-361a-489e-bcb2-e55a1d988fb1';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity = createIdentity({
+mock.identities[userName] = {};
+mock.identities[userName].identity = helpers.createIdentity({
   userName: userName,
   credentialSigningKey: keyId
 });
-config.issuer.identities[userName].keys = createKeyPair({
+mock.identities[userName].keys = helpers.createKeyPair({
   keyId: keyId,
   userName: userName,
   isSigningKey: true,
@@ -364,14 +308,14 @@ config.issuer.identities[userName].keys = createKeyPair({
 
 // organization member
 userName = 'organizationAlphaMember';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity =
-  createIdentity({userName: userName});
-config.issuer.identities[userName].identity.sysResourceRole.push({
+mock.identities[userName] = {};
+mock.identities[userName].identity =
+  helpers.createIdentity({userName: userName});
+mock.identities[userName].identity.sysResourceRole.push({
   sysRole: 'bedrock.credential.issuer',
-  resource: config.issuer.identities.organizationAlpha.identity.id
+  resource: mock.identities.organizationAlpha.identity.id
 });
-config.issuer.identities[userName].keys = createKeyPair({
+mock.identities[userName].keys = helpers.createKeyPair({
   userName: userName,
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAywAOU0Btp1IbPMKIUDL0\n' +
@@ -442,10 +386,10 @@ config.issuer.identities[userName].keys = createKeyPair({
 
 // organization non-member
 userName = 'organizationAlphaNonMember';
-config.issuer.identities[userName] = {};
-config.issuer.identities[userName].identity =
-  createIdentity({userName: userName});
-config.issuer.identities[userName].keys = createKeyPair({
+mock.identities[userName] = {};
+mock.identities[userName].identity =
+  helpers.createIdentity({userName: userName});
+mock.identities[userName].keys = helpers.createKeyPair({
   userName: userName,
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuJSQC+H3k2bXthj2dKJG\n' +
@@ -515,73 +459,10 @@ config.issuer.identities[userName].keys = createKeyPair({
 });
 
 // NOTE: this method only works if this suite is run independently
-// Object.keys(config.issuer.identities).forEach(function(key) {
-//   var i = config.issuer.identities[key];
+// Object.keys(mock.identities).forEach(function(key) {
+//   var i = mock.identities[key];
 //   config['identity-http'].identities.push(i.identity);
 //   if(i.keys) {
 //     Array.prototype.push.apply(config.key.keys, [].concat(i.keys));
 //   }
 // });
-
-function createIdentity(options) {
-  var userName = options.userName || uuid();
-  var newIdentity = {
-    id: config.server.baseUri + config['identity-http'].basePath +
-      '/' + userName,
-    type: 'Identity',
-    sysSlug: userName,
-    label: userName,
-    email: userName + '@bedrock.dev',
-    sysPassword: 'password',
-    sysPublic: ['label', 'url', 'description'],
-    sysResourceRole: [{
-      sysRole: 'bedrock.credential.issuer',
-      generateResource: 'id'
-    }],
-    url: config.server.baseUri,
-    description: userName
-  };
-  if(options.credentialSigningKey) {
-    newIdentity.sysPreferences = {
-      credentialSigningKey: config.server.baseUri + config.key.basePath + '/' +
-        options.credentialSigningKey
-    };
-  }
-  return newIdentity;
-}
-
-function createKeyPair(options) {
-  var keyId = options.keyId || uuid();
-  var fullKeyId = config.server.baseUri + config.key.basePath + '/' + keyId;
-  var userName = options.userName;
-  var publicKey = options.publicKey;
-  var privateKey = options.privateKey;
-  var ownerId = null;
-  if(userName === 'rsa1024Unknown') {
-    ownerId = '';
-  } else {
-    ownerId = config.server.baseUri + config['identity-http'].basePath +
-      '/' + userName;
-  }
-  var newKeyPair = {
-    publicKey: {
-      '@context': 'https://w3id.org/identity/v1',
-      id: fullKeyId,
-      type: 'CryptographicKey',
-      owner: ownerId,
-      label: 'Signing Key 1',
-      publicKeyPem: publicKey
-    },
-    privateKey: {
-      type: 'CryptographicKey',
-      owner: ownerId,
-      label: 'Signing Key 1',
-      publicKey: fullKeyId,
-      privateKeyPem: privateKey
-    }
-  };
-  if(options.isSigningKey) {
-    newKeyPair.isSigningKey = true;
-  }
-  return newKeyPair;
-}
