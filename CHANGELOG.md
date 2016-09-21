@@ -1,8 +1,13 @@
 # bedrock-issuer ChangeLog
 
+## 1.1.0 - 2016-09-21
+
 ### Added
 - Add ability to include custom meta data via `issue` API. Not
   yet available via HTTP API.
+
+## Changed
+- Restructure test framework for CI.
 
 ## 1.0.8 - 2016-08-03
 
