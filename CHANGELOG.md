@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.2.0 - 2016-10-11
+
+### Added
+- Emit a CredentialIssue event after issuing a credential.
+
 ## 1.1.0 - 2016-09-21
 
 ### Added
