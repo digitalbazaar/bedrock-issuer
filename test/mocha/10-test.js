@@ -23,7 +23,12 @@ describe('bedrock-issuer', function() {
   after('Remove test data', function(done) {
     helpers.removeCollections(done);
   });
-
+  describe('configuration', () => {
+    it('defines a CredentialIssue event', done => {
+      config['event-log'].eventTypes.CredentialIssue.should.be.an('object');
+      done();
+    });
+  });
   describe('HTTP API', function() {
     var unsignedCredentialTemplate = {
       '@context': 'https://w3id.org/credentials/v1',
@@ -111,6 +116,35 @@ describe('bedrock-issuer', function() {
           result.should.equal(1);
           done();
         });
+      });
+    });
+
+    it('emits a CredentialIssue event after issuing a credential', done => {
+      var credentialIssueEvent;
+      bedrock.events.on(`bedrock-issuer.credential.CredentialIssue`, e => {
+        credentialIssueEvent = e;
+      });
+      var issuerId = mockData.identities.issuerAlpha.identity.id;
+      var uniqueCredential = createUniqueCredential(issuerId);
+      var options = {
+        url: config.server.baseUri + config.issuer.endpoints.unsignedCredential,
+        body: uniqueCredential,
+        httpSignature: {
+          key: mockData.identities.issuerAlpha.keys.privateKey.privateKeyPem,
+          keyId: mockData.identities.issuerAlpha.keys.publicKey.id,
+          headers: ['date', 'host', 'request-line']
+        }
+      };
+      request.post(options, function(err, res, body) {
+        should.not.exist(err);
+        res.statusCode.should.equal(201);
+        credentialIssueEvent.type.should.equal('CredentialIssue');
+        credentialIssueEvent.date.should.be.a('string');
+        credentialIssueEvent.resource
+          .should.have.same.members([body.id]);
+        credentialIssueEvent.issuer.should.equal(issuerId);
+        credentialIssueEvent.actor.should.equal(issuerId);
+        done();
       });
     });
 
