@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.2.1 - 2016-11-14
+
+### Fixed
+- Fix failure in `issue` API when actor is null.
+
 ## 1.2.0 - 2016-10-11
 
 ### Added
