@@ -9,6 +9,18 @@ var helpers = require('./helpers');
 var mock = {};
 module.exports = mock;
 
+mock.unsignedCredential = {
+  '@context': 'https://w3id.org/credentials/v1',
+  type: ['Credential', 'BirthDateCredential'],
+  name: 'Birth Date Credential',
+  image: 'https://images.com/verified-email-badge',
+  issued: '2013-06-17T11:11:11Z',
+  claim: {
+    id: 'did:32e89321-a5f1-48ff-8ec8-a4112be1215c',
+    'schema:birthDate': '2013-06-17T11:11:11Z'
+  }
+};
+
 // TODO: Correct these paths to be more accurate
 var userName = '';
 var keyId = '';
