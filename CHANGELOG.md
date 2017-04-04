@@ -1,5 +1,10 @@
 # bedrock-issuer ChangeLog
 
+## 1.2.2 - 2017-04-04
+
+### Changed
+- Modify jsonld frame to allow same `issuer` and `claim.id`.
+
 ## 1.2.1 - 2016-11-14
 
 ### Fixed
