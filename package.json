@@ -24,7 +24,7 @@
   "dependencies": {
     "async": "^1.5.2",
     "http-signature": "^1.0.2",
-    "jsonld-signatures": "^1.1.2"
+    "jsonld-signatures": "^2.0.0"
   },
   "peerDependencies": {
     "bedrock": "^1.0.0",
